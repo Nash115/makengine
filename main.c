@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#define VERSION "v1.4"
+#define VERSION "v1.4.1"
 #define COMP_DATE __DATE__ " " __TIME__ 
 
 #define MAX_PATH 256
@@ -27,14 +27,15 @@ void reportAfterExec(int exitCode, double time);
 double interval(clock_t start, clock_t end);
 
 int main(int argc, char **argv) {
-    if (argc < 1) {
-        printf(COLOR_ERROR "Usage: %s <command / path / c file> ..." COLOR_RESET, argv[0]);
+    printf(COLOR_PRIMARY "🚀 WELCOME ! makengine - " VERSION "\n" COLOR_RESET);
+    fflush(stdout);
+
+    if (argc <= 1) {
+        printf(COLOR_ERROR "Usage: %s <command / path / c file> ...\n" COLOR_RESET, argv[0]);
+        printf("Try '%s --help' for more information.\n", argv[0]);
         fflush(stdout);
         return 1;
     }
-
-    printf(COLOR_PRIMARY "🚀 WELCOME ! makengine - " VERSION "\n" COLOR_RESET);
-    fflush(stdout);
 
     if (strcmp(argv[1], "-v") == 0  || strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "version") == 0)
     {
