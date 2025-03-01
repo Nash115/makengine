@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#define VERSION "v1.4.1"
+#define VERSION "v1.4.2"
 #define COMP_DATE __DATE__ " " __TIME__ 
 
 #define MAX_PATH 256
@@ -31,10 +31,47 @@ int main(int argc, char **argv) {
     fflush(stdout);
 
     if (argc <= 1) {
-        printf(COLOR_ERROR "Usage: %s <command / path / c file> ...\n" COLOR_RESET, argv[0]);
-        printf("Try '%s --help' for more information.\n", argv[0]);
-        fflush(stdout);
-        return 1;
+        if (access("makefile", F_OK) != -1) {
+            printf(COLOR_OK "Makefile found in the current directory !\n" COLOR_RESET);
+            fflush(stdout);
+            int r1 = system("make");
+            printf(COLOR_RESET);
+            fflush(stdout);
+            if (r1 != 0) {
+                printf(COLOR_ERROR "Error: Unable to make\n" COLOR_RESET);
+                fflush(stdout);
+                return r1;
+            }
+            else
+            {
+                printf(COLOR_OK "Made successfully. Executing...\n" COLOR_RESET);
+                fflush(stdout);
+                char path[MAX_PATH];
+                sprintf(path, "main");
+                float start = clock();
+                int r2 = execute(path);
+                float end = clock();
+                reportAfterExec(r2, interval(start, end));
+                printf(COLOR_SECONDARY);
+                fflush(stdout);
+                int r3 = system("make clean");
+                printf(COLOR_RESET);
+                fflush(stdout);
+                if (r3 != 0) {
+                    printf(COLOR_ERROR "Error: Unable to clean\n" COLOR_RESET);
+                    fflush(stdout);
+                    return 1;
+                }
+                return r2;
+            }
+        } else {
+            printf(COLOR_WARNING "No makefile found in the current directory\n" COLOR_RESET);
+            fflush(stdout);
+            printf(COLOR_ERROR "Usage: %s <command / path / c file> ...\n" COLOR_RESET, argv[0]);
+            printf("Try '%s --help' for more information.\n", argv[0]);
+            fflush(stdout);
+            return 1;
+        }
     }
 
     if (strcmp(argv[1], "-v") == 0  || strcmp(argv[1], "--version") == 0 || strcmp(argv[1], "version") == 0)
@@ -63,6 +100,7 @@ int main(int argc, char **argv) {
     else if (strcmp(argv[1], "-h") == 0  || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "help") == 0)
     {
         printf("### Makengine - available commands: ###\n");
+        printf("* No command: Make (using the makefile) and execute (`main` exec) the program in the current directory (and then clear)\n");
         printf("* -v, --version, version: Show version information\n");
         printf("* -h, --help, help: Show help information\n");
         printf("* update: Update makengine (need the source code into `makengine_project` folder)\n");
@@ -133,8 +171,6 @@ int isValidPath(char *path) {
 }
 
 int make(char *path) {
-    char command[MAX_PATH];
-    sprintf(command, "gcc %s.c -o %s", path, path);
     change_dir(path);
     printf(COLOR_SECONDARY);
     fflush(stdout);
@@ -159,8 +195,6 @@ int make(char *path) {
 }
 
 int makeClean(char *path) {
-    char command[MAX_PATH];
-    sprintf(command, "gcc %s.c -o %s", path, path);
     change_dir(path);
     printf(COLOR_SECONDARY);
     fflush(stdout);
