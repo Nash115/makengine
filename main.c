@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#define VERSION "v1.4.5"
+#define VERSION "v1.5"
 #define COMP_DATE __DATE__ " " __TIME__ 
 
 #define MAX_PATH 256
@@ -18,6 +18,7 @@
 
 int setting_no_clean = 0;
 
+void checkWarnings(void);
 int change_dir(char *path);
 int isValidPath(char *path);
 int isCfile(char *path);
@@ -28,13 +29,15 @@ double interval(clock_t start, clock_t end);
 void printUsage(char *programName);
 int handleMakefile(int argc, char **argv);
 void handleVersion();
-int handleUpdate();
+int handleUpdate(char cwd[MAX_PATH]);
 void handleHelp();
 int handleCFile(char *path);
 int handlePath(char *path, char *cwd, int argc, char **argv);
 
 int main(int argc, char **argv) {
     char cwd[MAX_PATH];
+
+    checkWarnings();
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "--version") == 0) {
@@ -59,7 +62,7 @@ int main(int argc, char **argv) {
     } else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "version") == 0) {
         handleVersion();
     } else if (strcmp(argv[1], "update") == 0) {
-        handleUpdate();
+        handleUpdate(cwd);
     } else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "help") == 0) {
         handleHelp();
     } else if (isCfile(argv[1])) {
@@ -72,6 +75,14 @@ int main(int argc, char **argv) {
         return 1;
     }
     return 0;
+}
+
+void checkWarnings(void) {
+    char *repo_path = getenv("MAKENGINE_REPO_PATH");
+    if (repo_path == NULL) {
+        printf(COLOR_WARNING "Warning: Environment variable MAKENGINE_REPO_PATH is not set\n" COLOR_RESET);
+        fflush(stdout);
+    }
 }
 
 int handleMakefile(int argc, char **argv) {
@@ -121,7 +132,20 @@ void handleVersion() {
     fflush(stdout);
 }
 
-int handleUpdate() {
+int handleUpdate(char cwd[MAX_PATH]) {
+    char *repo_path = getenv("MAKENGINE_REPO_PATH");
+    if (repo_path == NULL) {
+        printf(COLOR_ERROR "Error: Environment variable MAKENGINE_REPO_PATH is not set\n" COLOR_RESET);
+        fflush(stdout);
+        return 1;
+    }
+
+    if (chdir(repo_path) != 0) {
+        printf(COLOR_ERROR "Error: Unable to change directory to %s\n" COLOR_RESET, repo_path);
+        fflush(stdout);
+        return 1;
+    }
+
     printf(COLOR_PRIMARY "makengine - " VERSION "\n" COLOR_RESET);
     fflush(stdout);
     printf(COLOR_PRIMARY "Compiling . . .\n" COLOR_RESET);
@@ -131,6 +155,7 @@ int handleUpdate() {
         printf(COLOR_ERROR "Error: Unable to compile\n" COLOR_RESET);
         fflush(stdout);
         printf(COLOR_WARNING "Update Aborted\n" COLOR_RESET);
+        chdir(cwd);
         return 1;
     } else {
         printf(COLOR_OK "Compiled successfully.\n" COLOR_RESET);
@@ -142,6 +167,7 @@ int handleUpdate() {
             printf(COLOR_WARNING "Update available but unable to show version\n" COLOR_RESET);
             fflush(stdout);
         }
+        chdir(cwd);
         return 0;
     }
 }

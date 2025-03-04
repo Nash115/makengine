@@ -16,7 +16,11 @@ make
 ```
 
 > [!IMPORTANT]
-> If you want to use `makengine` globally, you may need to add the `makengine` directory to your `PATH` !
+> If you want to use `makengine` globally, you may need to add the `makengine` directory to your `PATH` environment variable.
+> You can do this by adding the following line to your `~/.zshrc` file (or equivalent):
+> ```sh
+> export MAKENGINE_REPO_PATH=$HOME/.../.../makengine
+> ```
 
 
 ## Usage
