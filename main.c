@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#define VERSION "v1.4.3"
+#define VERSION "v1.4.4"
 #define COMP_DATE __DATE__ " " __TIME__ 
 
 #define MAX_PATH 256
@@ -140,11 +140,11 @@ int handleUpdate() {
 
 void handleHelp() {
     printf("### Makengine - available commands: ###\n");
-    printf("* No command\tMake (using the makefile) and execute (`main` exec) the program in the current directory (and then clear)\n");
+    printf("* No command\tMake (using the makefile) and execute (`main` exec) the program in the current directory (and then clean)\n");
     printf("* -v, --version, version\tShow version information\n");
     printf("* -h, --help, help\tShow help information\n");
     printf("* update\tUpdate makengine (need to be in the makengine's repo directory)\n");
-    printf("* <path>\tMake (using the makefile) and execute (`main` exec) the program in the path (and then clear)\n");
+    printf("* <path>\tMake (using the makefile) and execute (`main` exec) the program in the path (and then clean)\n");
     printf("* <c file>\tCompile and execute the c file using gcc\n");
     fflush(stdout);
 }
@@ -157,6 +157,18 @@ int handleCFile(char *path) {
         int r = execute(path);
         clock_t end = clock();
         reportAfterExec(r, interval(start, end));
+        char command[MAX_PATH] = "rm -f ";
+        strcat(command, path);
+        int r2 = system(command);
+        printf(COLOR_SECONDARY);
+        fflush(stdout);
+        printf("%s\n", command);
+        printf(COLOR_RESET);
+        fflush(stdout);
+        if (r2 != 0) {
+            printf(COLOR_ERROR "Error: Unable to remove\n" COLOR_RESET);
+            fflush(stdout);
+        }
         return r;
     } else {
         printf(COLOR_ERROR "Error: Unable to compile\n" COLOR_RESET);
@@ -205,11 +217,12 @@ int isCfile(char *path) {
 }
 
 int compileC(char *path) {
-    char command[MAX_PATH];
-    char pathCopy[MAX_PATH];
-    strncpy(pathCopy, path, MAX_PATH);
-    pathCopy[strlen(pathCopy) - 2] = '\0';
-    sprintf(command, "gcc %s.c -o %s", pathCopy, pathCopy);
+    char command[MAX_PATH] = "";
+    path[strlen(path) - 2] = '\0';
+    strcat(command, "gcc ");
+    strcat(command, path);
+    strcat(command, ".c -o ");
+    strcat(command, path);
     int r = system(command);
     if (r != 0) {
         printf(COLOR_ERROR "Error: Unable to compile\n" COLOR_RESET);
