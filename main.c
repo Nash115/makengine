@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <time.h>
 
-#define VERSION "v1.4.4"
+#define VERSION "v1.4.5"
 #define COMP_DATE __DATE__ " " __TIME__ 
 
 #define MAX_PATH 256
@@ -15,6 +15,8 @@
 #define COLOR_ERROR "\033[1;31m"
 #define COLOR_WARNING "\033[1;33m"
 #define COLOR_RESET "\033[0m"
+
+int setting_no_clean = 0;
 
 int change_dir(char *path);
 int isValidPath(char *path);
@@ -34,9 +36,13 @@ int handlePath(char *path, char *cwd, int argc, char **argv);
 int main(int argc, char **argv) {
     char cwd[MAX_PATH];
 
-    if (argc > 1 && strcmp(argv[1], "--version") == 0) {
-        handleVersion();
-        return 0;
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "--version") == 0) {
+            handleVersion();
+            return 0;
+        } else if (strcmp(argv[i], "-nc") == 0 || strcmp(argv[i], "--no-clean") == 0) {
+            setting_no_clean = 1;
+        }
     }
 
     printf(COLOR_PRIMARY "🚀 WELCOME ! makengine - " VERSION "\n" COLOR_RESET);
@@ -88,15 +94,17 @@ int handleMakefile(int argc, char **argv) {
             int r2 = execute(path);
             clock_t end = clock();
             reportAfterExec(r2, interval(start, end));
-            printf(COLOR_SECONDARY);
-            fflush(stdout);
-            int r3 = system("make clean");
-            printf(COLOR_RESET);
-            fflush(stdout);
-            if (r3 != 0) {
-                printf(COLOR_ERROR "Error: Unable to clean\n" COLOR_RESET);
+            if (! setting_no_clean) {
+                printf(COLOR_SECONDARY);
                 fflush(stdout);
-                return r3;
+                int r3 = system("make clean");
+                printf(COLOR_RESET);
+                fflush(stdout);
+                if (r3 != 0) {
+                    printf(COLOR_ERROR "Error: Unable to clean\n" COLOR_RESET);
+                    fflush(stdout);
+                    return r3;
+                }
             }
             return r2;
         }
@@ -157,17 +165,19 @@ int handleCFile(char *path) {
         int r = execute(path);
         clock_t end = clock();
         reportAfterExec(r, interval(start, end));
-        char command[MAX_PATH] = "rm -f ";
-        strcat(command, path);
-        int r2 = system(command);
-        printf(COLOR_SECONDARY);
-        fflush(stdout);
-        printf("%s\n", command);
-        printf(COLOR_RESET);
-        fflush(stdout);
-        if (r2 != 0) {
-            printf(COLOR_ERROR "Error: Unable to remove\n" COLOR_RESET);
+        if (! setting_no_clean) {
+            char command[MAX_PATH] = "rm -f ";
+            strcat(command, path);
+            printf(COLOR_SECONDARY);
             fflush(stdout);
+            printf("%s\n", command);
+            printf(COLOR_RESET);
+            fflush(stdout);
+            int r2 = system(command);
+            if (r2 != 0) {
+                printf(COLOR_ERROR "Error: Unable to remove\n" COLOR_RESET);
+                fflush(stdout);
+            }
         }
         return r;
     } else {

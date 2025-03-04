@@ -30,8 +30,13 @@ makengine < command / path / c file >
 - **-v, --version, version**: Show version information.
 - **-h, --help, help**: Show help information.
 - **update**: Update `makengine` (needs to be in the `makengine`'s repo directory).
-- **<path>**: Make (using the `makefile`) and execute (`main` exec) the program in the specified path (and then clear).
-- **<c file>**: Compile and execute the C file using `gcc`.
+- **[ path ]**: Make (using the `makefile`) and execute (`main` exec) the program in the specified path (and then clear).
+- **[ c file ]**: Compile and execute the C file using `gcc`.
+
+### Options
+
+- **-nc, --no-clean**: Do not clean up the build files after execution.
+
 
 ## Examples
 - To compile and run a C file:
