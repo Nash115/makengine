@@ -17,8 +17,14 @@ make
 
 > [!IMPORTANT]
 > If you want to use `makengine` globally, you may need to add the `makengine` directory to your `PATH` environment variable.
+>
 > You can do this by adding the following line to your `~/.zshrc` file (or equivalent):
+>
+> You also need to set the `MAKENGINE_REPO_PATH` environment variable to the `makengine` directory.
+>
+> Replace the `...` with the actual path to the `makengine` directory where you cloned the repository.
 > ```sh
+> export PATH="$HOME/.../.../makengine:$PATH"
 > export MAKENGINE_REPO_PATH=$HOME/.../.../makengine
 > ```
 
