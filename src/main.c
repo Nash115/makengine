@@ -9,21 +9,25 @@
 #include "../include/utils.h"
 #include "../include/version.h"
 #include "../include/compilation.h"
+#include "../include/arguments.h"
 
 int main(int argc, char **argv) {
     char cwd[MAX_PATH];
 
-    settings_t setting_no_clean;
-    setting_no_clean.value = 0;
+    settings_t setting_no_clean = { .value = 0 };
 
     checkWarnings();
 
     for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "--version") == 0) {
+        if (strcmp(argv[i], VERSION_ARG) == 0 || strcmp(argv[i], VERSION_SHORT_ARG) == 0) {
             handleVersion();
             return 0;
-        } else if (strcmp(argv[i], "-nc") == 0 || strcmp(argv[i], "--no-clean") == 0) {
+        } else if (strcmp(argv[i], HELP_ARG) == 0 || strcmp(argv[i], HELP_SHORT_ARG) == 0 || strcmp(argv[i], "help") == 0) {
+            handleHelp();
+            return 0;
+        } else if (strcmp(argv[i], NO_CLEAN_ARG) == 0 || strcmp(argv[i], NO_CLEAN_SHORT_ARG) == 0) {
             setting_no_clean.value = 1;
+            argv[i] = NULL;
         }
     }
 
@@ -36,22 +40,19 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    if (argc <= 1) {
-        handleMakefile(argc, argv, setting_no_clean);
-    } else if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "version") == 0) {
-        handleVersion();
-    } else if (strcmp(argv[1], "update") == 0) {
-        handleUpdate(cwd, setting_no_clean);
-    } else if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "help") == 0) {
-        handleHelp();
-    } else if (isCfile(argv[1])) {
-        handleCFile(argv[1], setting_no_clean);
-    } else if (isValidPath(argv[1])) {
-        handlePath(argv[1], cwd, argc, argv, setting_no_clean);
-    } else {
-        printf(COLOR_ERROR "Unable to recognize command\n" COLOR_RESET);
-        fflush(stdout);
-        return 1;
+    for (int i = 1; i < argc; i++) {
+        if (argv[i] == NULL) continue;
+        
+        if (strcmp(argv[i], UPDATE_CMD) == 0) {
+            handleUpdate(cwd, setting_no_clean);
+        } else if (isCfile(argv[i])) {
+            handleCFile(argv[i], setting_no_clean);
+        } else if (isValidPath(argv[i])) {
+            handlePath(argv[i], cwd, argc, argv, setting_no_clean);
+        } else {
+            handleMakefile(argc, argv, setting_no_clean);
+        }
     }
+
     return 0;
 }
