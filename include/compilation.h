@@ -10,5 +10,6 @@ int handlePath(char *path, char *cwd, int argc, char **argv, settings_t setting_
 int handleCFile(char *path, settings_t setting_no_clean);
 int handleMakefile(int argc, char **argv, settings_t setting_no_clean);
 int handleUpdate(char cwd[MAX_PATH], settings_t setting_no_clean);
+int getOutputName(char output_name[MAX_PATH]);
 
 #endif // COMPILATION_H

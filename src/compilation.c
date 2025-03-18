@@ -122,6 +122,36 @@ int handleCFile(char *path, settings_t setting_no_clean) {
     }
 }
 
+int getOutputName(char output_name[MAX_PATH]) {
+    FILE *file;
+    char line[MAX_PATH];
+    file = fopen("makefile", "r");
+    if (file == NULL) {
+        perror("Erreur lors de l'ouverture du fichier makefile pour lecture");
+        output_name = "main";
+        fclose(file);
+        return 0;
+    }
+    if (fgets(line, sizeof(line), file) != NULL) {
+        for (int i = 0; i < strlen(line); i++) {
+            if (line[i] == ':') {
+                line[i] = '\0';
+                break;
+            }
+        }
+        strcpy(output_name, line);
+    } else {
+        perror("Erreur lors de la lecture de la ligne du fichier makefile");
+        output_name = "main";
+        fclose(file);
+        return 0;
+    }
+
+    fclose(file);
+
+    return 1;
+}
+
 int handleMakefile(int argc, char **argv, settings_t setting_no_clean) {
     if (access("makefile", F_OK) != -1) {
         printf(COLOR_SECONDARY);
@@ -137,7 +167,13 @@ int handleMakefile(int argc, char **argv, settings_t setting_no_clean) {
             printf(COLOR_OK "Made successfully. Executing...\n" COLOR_RESET);
             fflush(stdout);
             char path[MAX_PATH];
-            sprintf(path, "main");
+            char output_name[MAX_PATH];
+            if (getOutputName(output_name) == 0) {
+                printf(COLOR_ERROR "Error: Unable to get output name\n" COLOR_RESET);
+                fflush(stdout);
+                return 1;
+            }
+            sprintf(path, "%s", output_name);
             clock_t start = clock();
             int r2 = execute(path);
             clock_t end = clock();

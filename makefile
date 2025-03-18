@@ -1,4 +1,4 @@
-main: main.o warnings.o utils.o compilation.o
+makengine: main.o warnings.o utils.o compilation.o
 	gcc -o makengine main.o warnings.o utils.o compilation.o
 
 main.o: src/main.c
