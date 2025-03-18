@@ -15,6 +15,7 @@ int main(int argc, char **argv) {
     char cwd[MAX_PATH];
 
     settings_t setting_no_clean = { .value = 0 };
+    settings_t setting_no_exec = { .value = 0 };
 
     checkWarnings();
 
@@ -27,6 +28,13 @@ int main(int argc, char **argv) {
             return 0;
         } else if (strcmp(argv[i], NO_CLEAN_ARG) == 0 || strcmp(argv[i], NO_CLEAN_SHORT_ARG) == 0) {
             setting_no_clean.value = 1;
+            argv[i] = NULL;
+        } else if (strcmp(argv[i], NO_EXEC_ARG) == 0 || strcmp(argv[i], NO_EXEC_SHORT_ARG) == 0) {
+            setting_no_exec.value = 1;
+            setting_no_clean.value = 1;
+            argv[i] = NULL;
+        } else if (strcmp(argv[i], FORCE_CLEAN_ARG) == 0 || strcmp(argv[i], FORCE_CLEAN_SHORT_ARG) == 0) {
+            setting_no_clean.value = 0;
             argv[i] = NULL;
         }
     }
@@ -46,11 +54,11 @@ int main(int argc, char **argv) {
         if (strcmp(argv[i], UPDATE_CMD) == 0) {
             handleUpdate(cwd, setting_no_clean);
         } else if (isCfile(argv[i])) {
-            handleCFile(argv[i], setting_no_clean);
+            handleCFile(argv[i], setting_no_clean, setting_no_exec);
         } else if (isValidPath(argv[i])) {
-            handlePath(argv[i], cwd, argc, argv, setting_no_clean);
+            handlePath(argv[i], cwd, argc, argv, setting_no_clean, setting_no_exec);
         } else {
-            handleMakefile(argc, argv, setting_no_clean);
+            handleMakefile(argc, argv, setting_no_clean, setting_no_exec);
         }
     }
 

@@ -26,10 +26,10 @@ int compileC(char *path) {
     return 0;
 }
 
-int handlePath(char *path, char *cwd, int argc, char **argv, settings_t setting_no_clean) {
+int handlePath(char *path, char *cwd, int argc, char **argv, settings_t setting_no_clean, settings_t setting_no_exec) {
     chdir(path);
 
-    int r = handleMakefile(argc, argv, setting_no_clean);
+    int r = handleMakefile(argc, argv, setting_no_clean, setting_no_exec);
 
     chdir(cwd);
     return r;
@@ -92,14 +92,19 @@ int handleUpdate(char cwd[MAX_PATH], settings_t setting_no_clean) {
     return r;
 }
 
-int handleCFile(char *path, settings_t setting_no_clean) {
+int handleCFile(char *path, settings_t setting_no_clean, settings_t setting_no_exec) {
     if (compileC(path) == 0) {
-        printf(COLOR_PRIMARY "Compiled successfully. Executing...\n" COLOR_RESET);
-        fflush(stdout);
-        clock_t start = clock();
-        int r = execute(path);
-        clock_t end = clock();
-        reportAfterExec(r, interval(start, end));
+        if (setting_no_exec.value) {
+            printf(COLOR_OK "Compiled successfully. Not executing...\n" COLOR_RESET);
+            fflush(stdout);
+        } else {
+            printf(COLOR_PRIMARY "Compiled successfully. Executing...\n" COLOR_RESET);
+            fflush(stdout);
+            clock_t start = clock();
+            int r = execute(path);
+            clock_t end = clock();
+            reportAfterExec(r, interval(start, end));
+        }
         if (! setting_no_clean.value) {
             char command[MAX_PATH] = "rm -f ";
             strcat(command, path);
@@ -114,7 +119,7 @@ int handleCFile(char *path, settings_t setting_no_clean) {
                 fflush(stdout);
             }
         }
-        return r;
+        return 0;
     } else {
         printf(COLOR_ERROR "Error: Unable to compile\n" COLOR_RESET);
         fflush(stdout);
@@ -152,7 +157,7 @@ int getOutputName(char output_name[MAX_PATH]) {
     return 1;
 }
 
-int handleMakefile(int argc, char **argv, settings_t setting_no_clean) {
+int handleMakefile(int argc, char **argv, settings_t setting_no_clean, settings_t setting_no_exec) {
     if (access("makefile", F_OK) != -1) {
         printf(COLOR_SECONDARY);
         fflush(stdout);
@@ -164,20 +169,25 @@ int handleMakefile(int argc, char **argv, settings_t setting_no_clean) {
             fflush(stdout);
             return r1;
         } else {
-            printf(COLOR_OK "Made successfully. Executing...\n" COLOR_RESET);
-            fflush(stdout);
-            char path[MAX_PATH];
-            char output_name[MAX_PATH];
-            if (getOutputName(output_name) == 0) {
-                printf(COLOR_ERROR "Error: Unable to get output name\n" COLOR_RESET);
+            if (setting_no_exec.value) {
+                printf(COLOR_OK "Made successfully. Not executing...\n" COLOR_RESET);
                 fflush(stdout);
-                return 1;
+            } else {
+                printf(COLOR_OK "Made successfully. Executing...\n" COLOR_RESET);
+                fflush(stdout);
+                char path[MAX_PATH];
+                char output_name[MAX_PATH];
+                if (getOutputName(output_name) == 0) {
+                    printf(COLOR_ERROR "Error: Unable to get output name\n" COLOR_RESET);
+                    fflush(stdout);
+                    return 1;
+                }
+                sprintf(path, "%s", output_name);
+                clock_t start = clock();
+                int r2 = execute(path);
+                clock_t end = clock();
+                reportAfterExec(r2, interval(start, end));
             }
-            sprintf(path, "%s", output_name);
-            clock_t start = clock();
-            int r2 = execute(path);
-            clock_t end = clock();
-            reportAfterExec(r2, interval(start, end));
             if (! setting_no_clean.value) {
                 printf(COLOR_SECONDARY);
                 fflush(stdout);
@@ -190,7 +200,7 @@ int handleMakefile(int argc, char **argv, settings_t setting_no_clean) {
                     return r3;
                 }
             }
-            return r2;
+            return 0;
         }
     } else {
         printf(COLOR_WARNING "No makefile found in the directory\n" COLOR_RESET);

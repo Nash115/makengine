@@ -46,6 +46,8 @@ makengine < command / path / c file >
 ### Options
 
 - **-nc, --no-clean**: Do not clean up the build files after execution.
+- **-ne, --no-exec**: Do not execute the program after building. Using this option, `makengine` will not clean after execution. You can use `-fc` to force clean the build files.
+- **-fc, --force-clean**: Force clean the build files before executing. By default `makengine` will clean after execution, but this option is useful if you want to clean the build files while you are using `-ne` option.
 
 
 ## Examples
