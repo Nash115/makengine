@@ -9,13 +9,19 @@
 #include "../include/version.h"
 
 void handleHelp() {
-    printf("### Makengine - available commands: ###\n");
-    printf("* No command\tMake (using the makefile) and execute (`main` exec) the program in the current directory (and then clean)\n");
-    printf("* -v, --version, version\tShow version information\n");
-    printf("* -h, --help, help\tShow help information\n");
-    printf("* update\tUpdate makengine (need to be in the makengine's repo directory)\n");
-    printf("* <path>\tMake (using the makefile) and execute (`main` exec) the program in the path (and then clean)\n");
-    printf("* <c file>\tCompile and execute the c file using gcc\n");
+    printf(COLOR_PRIMARY "#" COLOR_OK "#" COLOR_SECONDARY "#" COLOR_RESET " Makengine " COLOR_WARNING "-" COLOR_RESET " help " COLOR_SECONDARY "#" COLOR_OK "#" COLOR_PRIMARY "#" COLOR_RESET"\n");
+    printf("\n");
+    printf(COLOR_PRIMARY "Available usages:\n" COLOR_RESET);
+    printf("\tNo command\t\tMake (using the makefile) and execute (`main` exec) the program in the current directory (and then clean)\n");
+    printf("\tupdate\t\t\tUpdate makengine (need to be in the makengine's repo directory)\n");
+    printf("\t<path>\t\t\tMake (using the makefile) and execute (`main` exec) the program in the path (and then clean)\n");
+    printf("\t<c file>\t\tCompile and execute the c file using gcc\n");
+    printf(COLOR_SECONDARY "Available options:\n" COLOR_RESET);
+    printf("\t-v, --version\t\tShow version information\n");
+    printf("\t-h, --help\t\tShow help information\n");
+    printf("\t-nc, --no-clean\t\tDon't clean the files after execution\n");
+    printf("\t-ne, --no-exec\t\tDon't execute the program after compilation\n");
+    printf("\t-fc, --force-clean\tForce clean the files after execution\n");
     fflush(stdout);
 }
 

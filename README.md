@@ -37,14 +37,14 @@ makengine < command / path / c file >
 
 ### Commands
 - **No command**: Make (using the `makefile`) and execute (`main` exec) the program in the current directory (and then clear).
-- **-v, --version, version**: Show version information.
-- **-h, --help, help**: Show help information.
 - **update**: Update `makengine` (needs to be in the `makengine`'s repo directory).
 - **[ path ]**: Make (using the `makefile`) and execute (`main` exec) the program in the specified path (and then clear).
 - **[ c file ]**: Compile and execute the C file using `gcc`.
 
 ### Options
 
+- **-v, --version**: Show version information.
+- **-h, --help**: Show help information.
 - **-nc, --no-clean**: Do not clean up the build files after execution.
 - **-ne, --no-exec**: Do not execute the program after building. Using this option, `makengine` will not clean after execution. You can use `-fc` to force clean the build files.
 - **-fc, --force-clean**: Force clean the build files before executing. By default `makengine` will clean after execution, but this option is useful if you want to clean the build files while you are using `-ne` option.
