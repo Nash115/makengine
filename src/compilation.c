@@ -74,7 +74,6 @@ int handleUpdate(char cwd[MAX_PATH], settings_t setting_no_clean) {
             printf(COLOR_WARNING "Update available but unable to show version\n" COLOR_RESET);
             fflush(stdout);
         }
-        chdir(cwd);
     }
 
     if (! setting_no_clean.value) {
@@ -89,6 +88,9 @@ int handleUpdate(char cwd[MAX_PATH], settings_t setting_no_clean) {
             return r3;
         }
     }
+
+    chdir(cwd);
+
     return r;
 }
 
@@ -182,11 +184,16 @@ int handleMakefile(int argc, char **argv, settings_t setting_no_clean, settings_
                     fflush(stdout);
                     return 1;
                 }
-                sprintf(path, "%s", output_name);
-                clock_t start = clock();
-                int r2 = execute(path);
-                clock_t end = clock();
-                reportAfterExec(r2, interval(start, end));
+                if (strcmp(output_name, "makengine") == 0) {
+                    printf(COLOR_WARNING "Output is makengine itself. Not executing...\n" COLOR_RESET);
+                    fflush(stdout);
+                } else {
+                    sprintf(path, "%s", output_name);
+                    clock_t start = clock();
+                    int r2 = execute(path);
+                    clock_t end = clock();
+                    reportAfterExec(r2, interval(start, end));
+                }
             }
             if (! setting_no_clean.value) {
                 printf(COLOR_SECONDARY);
@@ -220,5 +227,60 @@ int execute(char *path) {
         fflush(stdout);
         return 1;
     }
+    return 0;
+}
+
+int handleInit(settings_t setting_init_main_name) {
+
+    char main_name[MAX_PATH] = "";
+    strcpy(main_name, setting_init_main_name.value_str);
+
+    if (access("makefile", F_OK) != -1) {
+        printf(COLOR_SECONDARY "Warning: A 'makefile' already exists. Aborting creation.\n" COLOR_RESET);
+        return 0;
+    }
+
+    FILE *file = fopen("makefile", "w");
+    if (file == NULL) {
+        perror("Error creating makefile");
+        return 1;
+    }
+
+    fprintf(file, "%s: %s.o\n", main_name, main_name);
+    fprintf(file, "\tgcc -o %s %s.o\n\n", main_name, main_name);
+    fprintf(file, "%s.o: %s.c\n", main_name, main_name);
+    fprintf(file, "\tgcc -g -Wall -c %s.c\n\n", main_name);
+    fprintf(file, "clean:\n");
+    fprintf(file, "\trm -f %s *.o\n", main_name);
+
+    fclose(file);
+
+    printf(COLOR_OK "Makefile created successfully.\n" COLOR_RESET);
+
+    char filename[MAX_PATH] = "";
+    strcat(filename, main_name);
+    strcat(filename, ".c");
+
+    if (access(filename, F_OK) != -1) {
+        printf(COLOR_SECONDARY "Warning: A file with the name '%s' already exists. Aborting creation.\n" COLOR_RESET, main_name);
+        return 0;
+    }
+
+    file = fopen(filename, "w");
+    if (file == NULL) {
+        perror("Error creating .c file");
+        return 1;
+    }
+
+    fprintf(file, "#include <stdio.h>\n\n");
+    fprintf(file, "int main() {\n");
+    fprintf(file, "\tprintf(\"Hello, World!\\n\");\n");
+    fprintf(file, "\treturn 0;\n");
+    fprintf(file, "}\n");
+
+    fclose(file);
+
+    printf(COLOR_OK "main.c created successfully.\n" COLOR_RESET);
+
     return 0;
 }

@@ -11,17 +11,19 @@
 void handleHelp() {
     printf(COLOR_PRIMARY "#" COLOR_OK "#" COLOR_SECONDARY "#" COLOR_RESET " Makengine " COLOR_WARNING "-" COLOR_RESET " help " COLOR_SECONDARY "#" COLOR_OK "#" COLOR_PRIMARY "#" COLOR_RESET"\n");
     printf("\n");
-    printf(COLOR_PRIMARY "Available usages:\n" COLOR_RESET);
-    printf("\tNo command\t\tMake (using the makefile) and execute (`main` exec) the program in the current directory (and then clean)\n");
-    printf("\tupdate\t\t\tUpdate makengine (need to be in the makengine's repo directory)\n");
-    printf("\t<path>\t\t\tMake (using the makefile) and execute (`main` exec) the program in the path (and then clean)\n");
-    printf("\t<c file>\t\tCompile and execute the c file using gcc\n");
-    printf(COLOR_SECONDARY "Available options:\n" COLOR_RESET);
-    printf("\t-v, --version\t\tShow version information\n");
-    printf("\t-h, --help\t\tShow help information\n");
-    printf("\t-nc, --no-clean\t\tDon't clean the files after execution\n");
-    printf("\t-ne, --no-exec\t\tDon't execute the program after compilation\n");
-    printf("\t-fc, --force-clean\tForce clean the files after execution\n");
+    printf(COLOR_PRIMARY "Available usages:\n\n" COLOR_RESET);
+    printf("\tNo command\t\tMake (using the makefile) and execute (`main` exec) the program in the current directory (and then clean)\n\n");
+    printf("\tupdate\t\t\tUpdate makengine (need to be in the makengine's repo directory)\n\n");
+    printf("\t<path>\t\t\tMake (using the makefile) and execute (`main` exec) the program in the path (and then clean)\n\n");
+    printf("\t<c file>\t\tCompile and execute the c file using gcc\n\n");
+    printf("\tinit\t\t\tInitialize a new `makefile` in the current directory.\n\n");
+    printf(COLOR_SECONDARY "Available options:\n\n" COLOR_RESET);
+    printf("\t-v, --version\t\tShow version information\n\n");
+    printf("\t-h, --help\t\tShow help information\n\n");
+    printf("\t-nc, --no-clean\t\tDon't clean the files after execution\n\n");
+    printf("\t-ne, --no-exec\t\tDon't execute the program after compilation\n\n");
+    printf("\t-fc, --force-clean\tForce clean the files after execution\n\n");
+    printf("\t-ifn [ name ]\t\tForce clean the files after execution\n\t--init-file-name [ name ]\n\n");
     fflush(stdout);
 }
 

@@ -11,6 +11,11 @@
 #define NO_EXEC_SHORT_ARG "-ne"
 #define FORCE_CLEAN_ARG "--force-clean"
 #define FORCE_CLEAN_SHORT_ARG "-fc"
+#define INIT_MAIN_NAME_ARG "--init-file-name"
+#define INIT_MAIN_NAME_SHORT_ARG "-ifn"
+#define INIT_MAIN_NAME_DEFAULT "main"
+
 #define UPDATE_CMD "update"
+#define INIT_CMD "init"
 
 #endif // ARGUMENTS_H
