@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
             handlePath(argv[i], cwd, argc, argv, setting_no_clean, setting_no_exec);
             return 0;
         } else {
-            printf(COLOR_WARNING "Error: Invalid argument %s\n. Skipped" COLOR_RESET, argv[i]);
+            printf(COLOR_WARNING "Error: Invalid argument %s. Skipped.\n" COLOR_RESET, argv[i]);
             fflush(stdout);
         }
     }
