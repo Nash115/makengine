@@ -230,7 +230,8 @@ int execute(char *path) {
     return 0;
 }
 
-int handleInit(settings_t setting_init_main_name) {
+int handleInit(char *path, char *cwd, settings_t setting_init_main_name) {
+    chdir(path);
 
     char main_name[MAX_PATH] = "";
     strcpy(main_name, setting_init_main_name.value_str);
@@ -281,6 +282,9 @@ int handleInit(settings_t setting_init_main_name) {
     fclose(file);
 
     printf(COLOR_OK "main.c created successfully.\n" COLOR_RESET);
+
+
+    chdir(cwd);
 
     return 0;
 }

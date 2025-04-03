@@ -16,7 +16,7 @@ void handleHelp() {
     printf("\tupdate\t\t\tUpdate makengine (need to be in the makengine's repo directory)\n\n");
     printf("\t<path>\t\t\tMake (using the makefile) and execute (`main` exec) the program in the path (and then clean)\n\n");
     printf("\t<c file>\t\tCompile and execute the c file using gcc\n\n");
-    printf("\tinit\t\t\tInitialize a new `makefile` in the current directory.\n\n");
+    printf("\tinit <path (optn*)>\tInitialize a new `makefile` and a new `c` file in the specified (or current) path\n\n");
     printf(COLOR_SECONDARY "Available options:\n\n" COLOR_RESET);
     printf("\t-v, --version\t\tShow version information\n\n");
     printf("\t-h, --help\t\tShow help information\n\n");
@@ -24,6 +24,7 @@ void handleHelp() {
     printf("\t-ne, --no-exec\t\tDon't execute the program after compilation\n\n");
     printf("\t-fc, --force-clean\tForce clean the files after execution\n\n");
     printf("\t-ifn [ name ]\t\tForce clean the files after execution\n\t--init-file-name [ name ]\n\n");
+    printf("The (optn*) options are optional.\n");
     fflush(stdout);
 }
 

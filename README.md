@@ -40,7 +40,7 @@ makengine < command / path / c file >
 - **update**: Update `makengine` (needs to be in the `makengine`'s repo directory).
 - **[ path ]**: Make (using the `makefile`) and execute (`main` exec) the program in the specified path (and then clear).
 - **[ c file ]**: Compile and execute the C file using `gcc`.
-- **init**: Initialize a new `makefile` in the current directory.
+- **init [ path (optional) ]**: Initialize a new `makefile` and a new `c` file in the specified path. If no path is provided, it will create the files in the current directory. The default name for the `c` file is `main.c` (a simple Hello World file). The `makefile` will be created with a simple template.
 
 ### Options
 
@@ -49,7 +49,7 @@ makengine < command / path / c file >
 - **-nc, --no-clean**: Do not clean up the build files after execution.
 - **-ne, --no-exec**: Do not execute the program after building. Using this option, `makengine` will not clean after execution. You can use `-fc` to force clean the build files.
 - **-fc, --force-clean**: Force clean the build files before executing. By default `makengine` will clean after execution, but this option is useful if you want to clean the build files while you are using `-ne` option.
-- **-ifn [ name ], --init-file-name [ name ]**: Initialize a new `makefile` and `[name].c` file in the current directory. The default name is `main`.
+- **-ifn [ name ], --init-file-name [ name ]**: Set the name of the `c` file to be created when using the `init` command. The default name is `main.c`.
 
 
 ## Examples
