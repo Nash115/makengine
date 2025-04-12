@@ -28,6 +28,12 @@ make
 > export MAKENGINE_REPO_PATH=$HOME/.../.../makengine
 > ```
 
+### Makengine already installed ?
+
+If you already have `makengine` installed, you can fetch and pull the latest changes and then run:
+```sh
+makengine update
+```
 
 ## Usage
 Run `makengine` with the desired command or file path:

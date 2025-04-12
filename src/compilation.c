@@ -7,7 +7,7 @@
 #include "../include/compilation.h"
 #include "../include/constantes.h"
 #include "../include/version.h"
-#include "../include/types.h"
+#include "../include/settings.h"
 #include "../include/utils.h"
 
 int compileC(char *path) {
@@ -26,16 +26,16 @@ int compileC(char *path) {
     return 0;
 }
 
-int handlePath(char *path, char *cwd, int argc, char **argv, settings_t setting_no_clean, settings_t setting_no_exec) {
+int handlePath(char *path, char *cwd, int argc, char **argv, settings_t settings) {
     chdir(path);
 
-    int r = handleMakefile(argc, argv, setting_no_clean, setting_no_exec);
+    int r = handleMakefile(argc, argv, settings);
 
     chdir(cwd);
     return r;
 }
 
-int handleUpdate(char cwd[MAX_PATH], settings_t setting_no_clean) {
+int handleUpdate(char cwd[MAX_PATH], settings_t settings) {
     char *repo_path = getenv("MAKENGINE_REPO_PATH");
     if (repo_path == NULL) {
         printf(COLOR_ERROR "Error: Environment variable MAKENGINE_REPO_PATH is not set\n" COLOR_RESET);
@@ -76,7 +76,7 @@ int handleUpdate(char cwd[MAX_PATH], settings_t setting_no_clean) {
         }
     }
 
-    if (! setting_no_clean.value) {
+    if (! settings.no_clean.value) {
         printf(COLOR_SECONDARY);
         fflush(stdout);
         int r3 = system("make clean");
@@ -94,9 +94,9 @@ int handleUpdate(char cwd[MAX_PATH], settings_t setting_no_clean) {
     return r;
 }
 
-int handleCFile(char *path, settings_t setting_no_clean, settings_t setting_no_exec) {
+int handleCFile(char *path, settings_t settings) {
     if (compileC(path) == 0) {
-        if (setting_no_exec.value) {
+        if (settings.no_exec.value) {
             printf(COLOR_OK "Compiled successfully. Not executing...\n" COLOR_RESET);
             fflush(stdout);
         } else {
@@ -107,7 +107,7 @@ int handleCFile(char *path, settings_t setting_no_clean, settings_t setting_no_e
             clock_t end = clock();
             reportAfterExec(r, interval(start, end));
         }
-        if (! setting_no_clean.value) {
+        if (! settings.no_clean.value) {
             char command[MAX_PATH] = "rm -f ";
             strcat(command, path);
             printf(COLOR_SECONDARY);
@@ -159,7 +159,7 @@ int getOutputName(char output_name[MAX_PATH]) {
     return 1;
 }
 
-int handleMakefile(int argc, char **argv, settings_t setting_no_clean, settings_t setting_no_exec) {
+int handleMakefile(int argc, char **argv, settings_t settings) {
     if (access("makefile", F_OK) != -1) {
         printf(COLOR_SECONDARY);
         fflush(stdout);
@@ -171,7 +171,7 @@ int handleMakefile(int argc, char **argv, settings_t setting_no_clean, settings_
             fflush(stdout);
             return r1;
         } else {
-            if (setting_no_exec.value) {
+            if (settings.no_exec.value) {
                 printf(COLOR_OK "Made successfully. Not executing...\n" COLOR_RESET);
                 fflush(stdout);
             } else {
@@ -195,7 +195,7 @@ int handleMakefile(int argc, char **argv, settings_t setting_no_clean, settings_
                     reportAfterExec(r2, interval(start, end));
                 }
             }
-            if (! setting_no_clean.value) {
+            if (! settings.no_clean.value) {
                 printf(COLOR_SECONDARY);
                 fflush(stdout);
                 int r3 = system("make clean");
@@ -223,18 +223,18 @@ int execute(char *path) {
     fflush(stdout);
     int r = system(command);
     if (r != 0) {
-        printf(COLOR_ERROR "Error: Unable to execute\n" COLOR_RESET);
+        printf(COLOR_ERROR "Error during execution (code %d)\n" COLOR_RESET, r);
         fflush(stdout);
         return 1;
     }
     return 0;
 }
 
-int handleInit(char *path, char *cwd, settings_t setting_init_main_name) {
+int handleInit(char *path, char *cwd, settings_t settings) {
     chdir(path);
 
     char main_name[MAX_PATH] = "";
-    strcpy(main_name, setting_init_main_name.value_str);
+    strcpy(main_name, settings.init_main_name.value);
 
     if (access("makefile", F_OK) != -1) {
         printf(COLOR_SECONDARY "Warning: A 'makefile' already exists. Aborting creation.\n" COLOR_RESET);
