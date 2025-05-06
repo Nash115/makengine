@@ -51,6 +51,7 @@ bool loadSettingsFromConfFile(settings_t *settings_t, int *nbConfRead, char *pat
             }
         }
         fclose(file);
+        chdir(cwd);
         return true;
     }
 
