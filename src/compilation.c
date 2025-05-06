@@ -300,7 +300,7 @@ int handleInit(char *path, char *cwd, settings_t settings) {
 
     fclose(file);
 
-    printf(COLOR_OK "main.c created successfully.\n" COLOR_RESET);
+    printf(COLOR_OK "%s.c created successfully.\n" COLOR_RESET, main_name);
 
 
     chdir(cwd);

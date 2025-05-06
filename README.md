@@ -57,6 +57,15 @@ makengine < command / path / c file >
 - **-fc, --force-clean**: Force clean the build files before executing. By default `makengine` will clean after execution, but this option is useful if you want to clean the build files while you are using `-ne` option.
 - **-ifn [ name ], --init-file-name [ name ]**: Set the name of the `c` file to be created when using the `init` command. The default name is `main.c`.
 
+### Configuration file
+You can create a configuration file named `makengine.conf` in any directory. By executing makengine **in this directory**, `makengine` will use the configuration file to set the default options. (They could be overridden by the command line options). The configuration file is a simple text file with the following format:
+
+```config
+# makengine configuration file
+
+setting_no_clean = <0 or 1 (or -1 for default)> 
+setting_no_exec = <0 or 1 (or -1 for default)>
+```
 
 ## Examples
 - To compile and run a C file:
