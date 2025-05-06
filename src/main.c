@@ -11,6 +11,7 @@
 #include "../include/version.h"
 #include "../include/compilation.h"
 #include "../include/arguments.h"
+#include "../include/configuration.h"
 
 int main(int argc, char **argv) {
     char cwd[MAX_PATH];
@@ -18,6 +19,9 @@ int main(int argc, char **argv) {
     char action[MAX_PATH] = "make";
 
     settings_t settings = initsettings();
+
+    bool configuration_file = false;
+    int nbConfRead = 0;
     
     char path_value[MAX_PATH] = ".";
     char cfile_value[MAX_PATH] = { 0 };
@@ -29,6 +33,16 @@ int main(int argc, char **argv) {
     }
 
     checkWarnings();
+
+    configuration_file = confFileExists(path_value, cwd);
+
+    if (configuration_file) {
+        if (!loadSettingsFromConfFile(&settings, &nbConfRead, path_value, cwd)) {
+            printf(COLOR_ERROR "Error: Unable to load settings from configuration file.\n" COLOR_RESET);
+            fflush(stdout);
+            return 1;
+        }
+    }
 
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], VERSION_ARG) == 0 || strcmp(argv[i], VERSION_SHORT_ARG) == 0) {
@@ -81,7 +95,8 @@ int main(int argc, char **argv) {
         }
     }
 
-    printf(COLOR_PRIMARY "🚀 WELCOME ! makengine - " VERSION "\n" COLOR_RESET);
+    if (configuration_file) printf(COLOR_PRIMARY "🚀{⚙️ •%d} WELCOME ! makengine - " VERSION "\n" COLOR_RESET, nbConfRead);
+    else printf(COLOR_PRIMARY "🚀 WELCOME ! makengine - " VERSION "\n" COLOR_RESET);
     fflush(stdout);
 
 
