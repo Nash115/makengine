@@ -163,7 +163,18 @@ int handleMakefile(int argc, char **argv, settings_t settings) {
     if (access("makefile", F_OK) != -1) {
         printf(COLOR_SECONDARY);
         fflush(stdout);
-        int r1 = system("make");
+        char command[MAX_PATH] = "make";
+        char outputNameFromArg[MAX_PATH] = "";
+        for (int i = 1; i < argc; i++) {
+            if (argv[i] != NULL) {
+                strcat(command, " ");
+                strcat(command, argv[i]);
+                if (strcmp(outputNameFromArg, "") == 0) {
+                    strcpy(outputNameFromArg, argv[i]);
+                }
+            }
+        }
+        int r1 = system(command);
         printf(COLOR_RESET);
         fflush(stdout);
         if (r1 != 0) {
@@ -179,20 +190,28 @@ int handleMakefile(int argc, char **argv, settings_t settings) {
                 fflush(stdout);
                 char path[MAX_PATH];
                 char output_name[MAX_PATH];
-                if (getOutputName(output_name) == 0) {
-                    printf(COLOR_ERROR "Error: Unable to get output name\n" COLOR_RESET);
-                    fflush(stdout);
-                    return 1;
-                }
-                if (strcmp(output_name, "makengine") == 0) {
-                    printf(COLOR_WARNING "Output is makengine itself. Not executing...\n" COLOR_RESET);
-                    fflush(stdout);
-                } else {
-                    sprintf(path, "%s", output_name);
+                if (strcmp(outputNameFromArg, "") != 0) {
+                    sprintf(path, "%s", outputNameFromArg);
                     clock_t start = clock();
                     int r2 = execute(path);
                     clock_t end = clock();
                     reportAfterExec(r2, interval(start, end));
+                } else {
+                    if (getOutputName(output_name) == 0) {
+                        printf(COLOR_ERROR "Error: Unable to get output name\n" COLOR_RESET);
+                        fflush(stdout);
+                        return 1;
+                    }
+                    if (strcmp(output_name, "makengine") == 0) {
+                        printf(COLOR_WARNING "Output is makengine itself. Not executing...\n" COLOR_RESET);
+                        fflush(stdout);
+                    } else {
+                        sprintf(path, "%s", output_name);
+                        clock_t start = clock();
+                        int r2 = execute(path);
+                        clock_t end = clock();
+                        reportAfterExec(r2, interval(start, end));
+                    }
                 }
             }
             if (! settings.no_clean.value) {

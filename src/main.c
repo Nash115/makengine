@@ -90,8 +90,8 @@ int main(int argc, char **argv) {
         }
 
         else {
-            printf(COLOR_WARNING "Error: Invalid argument %s. Skipped.\n" COLOR_RESET, argv[i]);
-            fflush(stdout);
+            // printf(COLOR_WARNING "Error: Invalid argument %s. Skipped.\n" COLOR_RESET, argv[i]);
+            // fflush(stdout);
         }
     }
 
