@@ -292,10 +292,11 @@ int handleInit(char *path, char *cwd, settings_t settings) {
         return 1;
     }
 
-    fprintf(file, "#include <stdio.h>\n\n");
-    fprintf(file, "int main() {\n");
-    fprintf(file, "\tprintf(\"Hello, World!\\n\");\n");
-    fprintf(file, "\treturn 0;\n");
+    fprintf(file, "#include <stdio.h>\n");
+    fprintf(file, "#include <stdlib.h>\n\n");
+    fprintf(file, "int main(int argc, char **argv) {\n");
+    fprintf(file, "    printf(\"Hello, makengine!\");\n");
+    fprintf(file, "    return 0;\n");
     fprintf(file, "}\n");
 
     fclose(file);
