@@ -3,6 +3,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #include "../include/utils.h"
 #include "../include/constantes.h"
@@ -60,7 +61,8 @@ void printUsage(char *programName) {
 }
 
 int isValidPath(char *path) {
-    if (access(path, F_OK) != -1) {
+    struct stat path_stat;
+    if (stat(path, &path_stat) == 0 && S_ISDIR(path_stat.st_mode)) {
         return 1;
     } else {
         return 0;
