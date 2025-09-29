@@ -117,8 +117,14 @@ int main(int argc, char **argv) {
         }
 
         else {
-            printf(COLOR_WARNING "Error: Invalid argument %s. Skipped.\n" COLOR_RESET, argv[i]);
-            fflush(stdout);
+            // Unknown argument, by default, this is considered as a 'make-args' argument
+            if (settings.make_args.value[0] == '\0') {
+                setSettingStr(&settings.make_args, argv[i]);
+            } else {
+                strcat(settings.make_args.value, " ");
+                strcat(settings.make_args.value, argv[i]);
+            }
+            argv[i] = NULL;
         }
     }
 
