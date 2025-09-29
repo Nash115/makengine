@@ -58,6 +58,8 @@ makengine < command / path / c file >
 - **-ne, --no-exec**: Do not execute the program after building. Using this option, `makengine` will not clean after execution. You can use `-fc` to force clean the build files.
 - **-fc, --force-clean**: Force clean the build files before executing. By default `makengine` will clean after execution, but this option is useful if you want to clean the build files while you are using `-ne` option.
 - **-ifn [ name ], --init-file-name [ name ]**: Set the name of the `c` file to be created when using the `init` command. The default name is `main.c`.
+- **--make-args [ args ]**: Pass args to make
+- **--exec-args [ args ]**: Pass args to the executable
 
 ### Configuration file
 You can create a configuration file named `makengine.conf` in any directory. By executing makengine **in this directory**, `makengine` will use the configuration file to set the default options. (They could be overridden by the command line options). The configuration file is a simple text file with the following format:
