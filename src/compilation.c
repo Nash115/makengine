@@ -26,10 +26,10 @@ int compileC(char *path) {
     return 0;
 }
 
-int handlePath(char *path, char *cwd, int argc, char **argv, settings_t settings) {
+int handlePath(char *path, char *cwd, settings_t settings) {
     chdir(path);
 
-    int r = handleMakefile(argc, argv, settings);
+    int r = handleMakefile(settings);
 
     chdir(cwd);
     return r;
@@ -103,7 +103,7 @@ int handleCFile(char *path, settings_t settings) {
             printf(COLOR_PRIMARY "Compiled successfully. Executing...\n" COLOR_RESET);
             fflush(stdout);
             clock_t start = clock();
-            int r = execute(path);
+            int r = execute(path, settings);
             clock_t end = clock();
             reportAfterExec(r, interval(start, end));
         }
@@ -159,20 +159,16 @@ int getOutputName(char output_name[MAX_PATH]) {
     return 1;
 }
 
-int handleMakefile(int argc, char **argv, settings_t settings) {
+int handleMakefile(settings_t settings) {
     if (access("makefile", F_OK) != -1) {
         printf(COLOR_SECONDARY);
         fflush(stdout);
         char command[MAX_PATH] = "make";
         char outputNameFromArg[MAX_PATH] = "";
-        for (int i = 1; i < argc; i++) {
-            if (argv[i] != NULL) {
-                strcat(command, " ");
-                strcat(command, argv[i]);
-                if (strcmp(outputNameFromArg, "") == 0) {
-                    strcpy(outputNameFromArg, argv[i]);
-                }
-            }
+        if (strcmp(settings.make_args.value, "") != 0) {
+            strcat(command, " ");
+            strcat(command, settings.make_args.value);
+            strcpy(outputNameFromArg, settings.make_args.value);
         }
         int r1 = system(command);
         printf(COLOR_RESET);
@@ -193,7 +189,7 @@ int handleMakefile(int argc, char **argv, settings_t settings) {
                 if (strcmp(outputNameFromArg, "") != 0) {
                     sprintf(path, "%s", outputNameFromArg);
                     clock_t start = clock();
-                    int r2 = execute(path);
+                    int r2 = execute(path, settings);
                     clock_t end = clock();
                     reportAfterExec(r2, interval(start, end));
                 } else {
@@ -208,7 +204,7 @@ int handleMakefile(int argc, char **argv, settings_t settings) {
                     } else {
                         sprintf(path, "%s", output_name);
                         clock_t start = clock();
-                        int r2 = execute(path);
+                        int r2 = execute(path, settings);
                         clock_t end = clock();
                         reportAfterExec(r2, interval(start, end));
                     }
@@ -231,14 +227,17 @@ int handleMakefile(int argc, char **argv, settings_t settings) {
     } else {
         printf(COLOR_WARNING "No makefile found in the directory\n" COLOR_RESET);
         fflush(stdout);
-        printUsage(argv[0]);
         return 1;
     }
 }
 
-int execute(char *path) {
+int execute(char *path, settings_t settings) {
     char command[MAX_PATH];
     sprintf(command, "./%s", path);
+    if (strcmp(settings.exec_args.value, "") != 0) {
+        strcat(command, " ");
+        strcat(command, settings.exec_args.value);
+    }
     fflush(stdout);
     int r = system(command);
     if (r != 0) {

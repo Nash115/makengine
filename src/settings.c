@@ -24,6 +24,8 @@ settings_t initsettings(void) {
     setSettingInt(&settings.no_clean, 0);
     setSettingInt(&settings.no_exec, 0);
     setSettingStr(&settings.init_main_name, INIT_MAIN_NAME_DEFAULT);
+    setSettingStr(&settings.make_args, "");
+    setSettingStr(&settings.exec_args, "");
 
     return settings;
 }

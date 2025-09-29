@@ -14,6 +14,8 @@
 #define INIT_MAIN_NAME_ARG "--init-file-name"
 #define INIT_MAIN_NAME_SHORT_ARG "-ifn"
 #define INIT_MAIN_NAME_DEFAULT "main"
+#define MAKE_ARGS_ARG "--make-args"
+#define EXEC_ARGS_ARG "--exec-args"
 
 #define UPDATE_CMD "update"
 #define INIT_CMD "init"

@@ -44,6 +44,9 @@ int main(int argc, char **argv) {
         }
     }
 
+    bool parsing_make_args = false;
+    bool parsing_exec_args = false;
+
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], VERSION_ARG) == 0 || strcmp(argv[i], VERSION_SHORT_ARG) == 0) {
             handleVersion();
@@ -72,6 +75,30 @@ int main(int argc, char **argv) {
                 fflush(stdout);
                 return 1;
             }
+        } else if (strcmp(argv[i], MAKE_ARGS_ARG) == 0) {
+            parsing_make_args = true;
+            parsing_exec_args = false;
+            argv[i] = NULL;
+        } else if (strcmp(argv[i], EXEC_ARGS_ARG) == 0) {
+            parsing_exec_args = true;
+            parsing_make_args = false;
+            argv[i] = NULL;
+        } else if (parsing_make_args) {
+            if (settings.make_args.value[0] == '\0') {
+                setSettingStr(&settings.make_args, argv[i]);
+            } else {
+                strcat(settings.make_args.value, " ");
+                strcat(settings.make_args.value, argv[i]);
+            }
+            argv[i] = NULL;
+        } else if (parsing_exec_args) {
+            if (settings.exec_args.value[0] == '\0') {
+                setSettingStr(&settings.exec_args, argv[i]);
+            } else {
+                strcat(settings.exec_args.value, " ");
+                strcat(settings.exec_args.value, argv[i]);
+            }
+            argv[i] = NULL;
         }
         
         else if (isCfile(argv[i])) {
@@ -90,8 +117,8 @@ int main(int argc, char **argv) {
         }
 
         else {
-            // printf(COLOR_WARNING "Error: Invalid argument %s. Skipped.\n" COLOR_RESET, argv[i]);
-            // fflush(stdout);
+            printf(COLOR_WARNING "Error: Invalid argument %s. Skipped.\n" COLOR_RESET, argv[i]);
+            fflush(stdout);
         }
     }
 
@@ -101,7 +128,7 @@ int main(int argc, char **argv) {
 
 
     if (strcmp(action, "make") == 0) {
-        handlePath(path_value, cwd, argc, argv, settings);
+        handlePath(path_value, cwd, settings);
     }
     else if(strcmp(action, "compile:c") == 0) {
         handleCFile(cfile_value, settings);
