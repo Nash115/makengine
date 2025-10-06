@@ -64,6 +64,9 @@ int main(int argc, char **argv) {
         } else if (strcmp(argv[i], FORCE_CLEAN_ARG) == 0 || strcmp(argv[i], FORCE_CLEAN_SHORT_ARG) == 0) {
             setSettingInt(&settings.no_clean, 0);
             argv[i] = NULL;
+        } else if (strcmp(argv[i], CLEAR_TERMINAL_ARG) == 0 || strcmp(argv[i], CLEAR_TERMINAL_SHORT_ARG) == 0) {
+            setSettingInt(&settings.clear_terminal, 1);
+            argv[i] = NULL;
         } else if (strcmp(argv[i], INIT_MAIN_NAME_ARG) == 0 || strcmp(argv[i], INIT_MAIN_NAME_SHORT_ARG) == 0) {
             if (i + 1 < argc) {
                 setSettingStr(&settings.init_main_name, argv[i + 1]);
@@ -125,6 +128,15 @@ int main(int argc, char **argv) {
                 strcat(settings.make_args.value, argv[i]);
             }
             argv[i] = NULL;
+        }
+    }
+
+    if (settings.clear_terminal.value) {
+        if (system("clear") != 0) {
+            if (system("cls") != 0) {
+                printf(COLOR_WARNING "Warning: Unable to clear the terminal\n" COLOR_RESET);
+                fflush(stdout);
+            }
         }
     }
 

@@ -17,6 +17,7 @@ typedef struct Settings {
     setting_str_t init_main_name;
     setting_str_t make_args;
     setting_str_t exec_args;
+    setting_int_t clear_terminal;
 } settings_t;
 
 void setSettingInt(setting_int_t *setting, int value);

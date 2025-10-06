@@ -16,6 +16,8 @@
 #define INIT_MAIN_NAME_DEFAULT "main"
 #define MAKE_ARGS_ARG "--make-args"
 #define EXEC_ARGS_ARG "--exec-args"
+#define CLEAR_TERMINAL_ARG "--clear-terminal"
+#define CLEAR_TERMINAL_SHORT_ARG "-ct"
 
 #define UPDATE_CMD "update"
 #define INIT_CMD "init"

@@ -14,9 +14,9 @@ void handleHelp() {
     printf(COLOR_PRIMARY "#" COLOR_OK "#" COLOR_SECONDARY "#" COLOR_RESET " Makengine " COLOR_WARNING "-" COLOR_RESET " help " COLOR_SECONDARY "#" COLOR_OK "#" COLOR_PRIMARY "#" COLOR_RESET"\n");
     printf("\n");
     printf(COLOR_PRIMARY "Available usages:\n\n" COLOR_RESET);
-    printf("\tNo command\t\tMake (using the makefile) and execute (`main` exec) the program in the current directory (and then clean)\n\n");
+    printf("\tNo command\t\tMake (using the makefile) and execute the program in the current directory (and then clean)\n\n");
     printf("\t" UPDATE_CMD "\t\t\tUpdate makengine (need to be in the makengine's repo directory)\n\n");
-    printf("\t<path>\t\t\tMake (using the makefile) and execute (`main` exec) the program in the path (and then clean)\n\n");
+    printf("\t<path>\t\t\tMoves to the specified path, makes (using the `makefile`), and executes the program (and then cleans and returns to the initial working directory).\n\n");
     printf("\t<c file>\t\tCompile and execute the c file using gcc\n\n");
     printf("\t" INIT_CMD " <path (optn*)>\tInitialize a new `makefile` and a new `c` file in the specified (or current) path\n\n");
     printf(COLOR_SECONDARY "Available options:\n\n" COLOR_RESET);
@@ -28,6 +28,7 @@ void handleHelp() {
     printf("\t" INIT_MAIN_NAME_SHORT_ARG " [ name ]\t\tPersonalize the main file name (default : " INIT_MAIN_NAME_DEFAULT ")\n\t" INIT_MAIN_NAME_ARG " [ name ]\n\n");
     printf("\t" MAKE_ARGS_ARG " [ args ]\tPass args to make\n\n");
     printf("\t" EXEC_ARGS_ARG " [ args ]\tPass args to the executable\n\n");
+    printf("\t" CLEAR_TERMINAL_SHORT_ARG ", " CLEAR_TERMINAL_ARG "\tClear the terminal before each execution\n\n");
     printf("The (optn*) options are optional.\n");
     fflush(stdout);
 }
