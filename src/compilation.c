@@ -307,3 +307,69 @@ int handleInit(char *path, char *cwd, settings_t settings) {
 
     return 0;
 }
+
+int compileJavaPackage(settings_t settings) {
+    char command[MAX_PATH] = "";
+    strcat(command, "javac -d out ");
+    strcat(command, settings.javaPackageName.value);
+    strcat(command, "/*.java");
+    int r = system(command);
+    if (r != 0) {
+        printf(COLOR_ERROR "Error: Unable to compile\n" COLOR_RESET);
+        fflush(stdout);
+        return 1;
+    }
+    return 0;
+}
+
+int executeJavaPackage(settings_t settings) {
+    char command[MAX_PATH];
+    sprintf(command, "java -cp out %s.Main", settings.javaPackageName.value);
+    if (strcmp(settings.exec_args.value, "") != 0) {
+        strcat(command, " ");
+        strcat(command, settings.exec_args.value);
+    }
+    fflush(stdout);
+    int r = system(command);
+    if (r != 0) {
+        printf(COLOR_ERROR "Error during execution (code %d)\n" COLOR_RESET, r);
+        fflush(stdout);
+        return 1;
+    }
+    return 0;
+}
+
+int handleJavaPackage(settings_t settings) {
+    if (compileJavaPackage(settings) == 0) {
+        if (settings.no_exec.value) {
+            printf(COLOR_OK "Compiled successfully. Not executing...\n" COLOR_RESET);
+            fflush(stdout);
+        } else {
+            printf(COLOR_PRIMARY "Compiled successfully. Executing...\n" COLOR_RESET);
+            fflush(stdout);
+            clock_t start = clock();
+            int r = executeJavaPackage(settings);
+            clock_t end = clock();
+            reportAfterExec(r, interval(start, end));
+        }
+        if (! settings.no_clean.value) {
+            char command[MAX_PATH] = "rm -f ";
+            strcat(command, "out/*.class");
+            printf(COLOR_SECONDARY);
+            fflush(stdout);
+            printf("%s\n", command);
+            printf(COLOR_RESET);
+            fflush(stdout);
+            int r2 = system(command);
+            if (r2 != 0) {
+                printf(COLOR_ERROR "Error: Unable to remove\n" COLOR_RESET);
+                fflush(stdout);
+            }
+        }
+        return 0;
+    } else {
+        printf(COLOR_ERROR "Error: Unable to compile\n" COLOR_RESET);
+        fflush(stdout);
+        return 1;
+    }
+}

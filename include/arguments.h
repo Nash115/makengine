@@ -18,6 +18,8 @@
 #define EXEC_ARGS_ARG "--exec-args"
 #define CLEAR_TERMINAL_ARG "--clear-terminal"
 #define CLEAR_TERMINAL_SHORT_ARG "-ct"
+#define JAVA_PACKAGE_ARG "--java"
+#define JAVA_PACKAGE_SHORT_ARG "-java"
 
 #define UPDATE_CMD "update"
 #define INIT_CMD "init"

@@ -3,11 +3,14 @@
 # makengine
 
 ## Overview
-`makengine` is a command-line tool designed to simplify the process of compiling and executing C programs. It provides a streamlined interface for building projects using `makefile` and directly compiling single C files.
+`makengine` is a command-line tool designed to simplify the process of compiling and executing programs. It provides a streamlined interface for building projects using `makefile` and directly compiling files.
 
 ## Features
 - **Automatic Makefile Execution**: If a `makefile` is present in the directory, `makengine` will automatically use it to build and execute the project.
 - **Single C File Compilation**: Directly compile and execute single C files.
+- **Project Initialization**: Easily create a new `makefile` and a simple C file with a single command.
+- **Customizable Options**: Various command-line options to control behavior, such as skipping cleanup or execution.
+
 
 ## Installation
 To install `makengine`, clone the repository and compile the source code:
@@ -61,6 +64,7 @@ makengine < command / path / c file >
 - `--make-args <args>`: Pass args to make
 - `--exec-args <args>`: Pass args to the executable
 - `-ct`, `--clear-terminal`: Clear the terminal before each execution.
+- `-java <java_package_name>`, `--java <java_package_name>`: Compile and execute a Java Package. The package name must be provided.
 
 ### Configuration file
 You can create a configuration file named `makengine.conf` in any directory. By executing makengine **in this directory**, `makengine` will use the configuration file to set the default options. (They could be overridden by the command line options). The configuration file is a simple text file with the following format:

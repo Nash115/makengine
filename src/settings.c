@@ -27,6 +27,7 @@ settings_t initsettings(void) {
     setSettingStr(&settings.make_args, "");
     setSettingStr(&settings.exec_args, "");
     setSettingInt(&settings.clear_terminal, 0);
-
+    setSettingStr(&settings.javaPackageName, "");
+    
     return settings;
 }

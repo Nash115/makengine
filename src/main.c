@@ -78,6 +78,18 @@ int main(int argc, char **argv) {
                 fflush(stdout);
                 return 1;
             }
+        } else if (strcmp(argv[i], JAVA_PACKAGE_ARG) == 0 || strcmp(argv[i], JAVA_PACKAGE_SHORT_ARG) == 0) {
+            if (i + 1 < argc) {
+                strcpy(action, "compile:java");
+                setSettingStr(&settings.javaPackageName, argv[i + 1]);
+                argv[i] = NULL;
+                argv[i + 1] = NULL;
+                i++;
+            } else {
+                printf(COLOR_ERROR "Error: Missing argument for %s\n" COLOR_RESET, argv[i]);
+                fflush(stdout);
+                return 1;
+            }
         } else if (strcmp(argv[i], MAKE_ARGS_ARG) == 0) {
             parsing_make_args = true;
             parsing_exec_args = false;
@@ -140,8 +152,17 @@ int main(int argc, char **argv) {
         }
     }
 
-    if (configuration_file) printf(COLOR_PRIMARY "🚀{⚙️ •%d} WELCOME ! makengine - " VERSION "\n" COLOR_RESET, nbConfRead);
-    else printf(COLOR_PRIMARY "🚀 WELCOME ! makengine - " VERSION "\n" COLOR_RESET);
+    char emoji[10] = "";
+    if (strcmp(action, "compile:c") == 0) {
+        strcat(emoji, "🛠");
+    } else if (strcmp(action, "compile:java") == 0) {
+        strcat(emoji, "☕️");
+    } else {
+        strcat(emoji, "🚀");
+    }
+
+    if (configuration_file) printf(COLOR_PRIMARY "%s{⚙️ •%d} WELCOME ! makengine - " VERSION "\n" COLOR_RESET, emoji, nbConfRead);
+    else printf(COLOR_PRIMARY "%s WELCOME ! makengine - " VERSION "\n" COLOR_RESET, emoji);
     fflush(stdout);
 
 
@@ -156,6 +177,9 @@ int main(int argc, char **argv) {
     }
     else if (strcmp(action, "update") == 0) {
         handleUpdate(cwd, settings);
+    }
+    else if(strcmp(action, "compile:java") == 0) {
+        handleJavaPackage(settings);
     }
     else {
         printf(COLOR_ERROR "Error: Unknown action %s\n" COLOR_RESET, action);
